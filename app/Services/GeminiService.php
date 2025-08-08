@@ -13,7 +13,7 @@ class GeminiService
             'expireTime' => Carbon::now('UTC')->addMinutes($expireIn)->toIso8601String(),
             'uses' => $uses,
             'bidiGenerateContentSetup' => [
-                'model' => 'models/gemini-2.0-flash-live-001',
+                'model' => 'models/gemini-2.0-flash-exp',
                 'generationConfig' => [
                     'responseModalities' => ['AUDIO'],
                     'temperature' => 0.7,
