@@ -4,8 +4,17 @@ import MainApp from '@/components/MainApp.vue';
 import { LiveClientOptions } from '@/types/genai';
 import { Head } from '@inertiajs/vue3';
 
+interface Props {
+    token: string;
+}
+
+const props = defineProps<Props>();
+
 const options: LiveClientOptions = {
-    apiKey: import.meta.env.VITE_GEMINI_API_KEY || "",
+    apiKey: props.token,
+    httpOptions: {
+        apiVersion: 'v1alpha'
+    }
 }
 
 </script>
