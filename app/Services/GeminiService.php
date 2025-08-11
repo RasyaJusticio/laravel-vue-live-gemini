@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class GeminiService
 {
@@ -13,14 +14,6 @@ class GeminiService
         $body = [
             'expireTime' => $expireTime,
             'uses' => $uses,
-            'bidiGenerateContentSetup' => [
-                'model' => 'models/gemini-2.0-flash-exp',
-                'generationConfig' => [
-                    'responseModalities' => ['AUDIO'],
-                    'temperature' => 0.7,
-                ],
-                'sessionResumption' => (object) [],
-            ],
         ];
 
         $response = Http::withHeaders([
@@ -28,7 +21,7 @@ class GeminiService
             'Accept' => 'application/json',
             'x-goog-api-key' => env('GEMINI_API_KEY'),
         ])->post('https://generativelanguage.googleapis.com/v1alpha/auth_tokens', $body);
-        
+
         $data = $response->json();
 
         return [

@@ -56,6 +56,10 @@ export interface LiveClientEventTypes {
   setupcomplete: () => void;
   // Emitted when a tool call is received
   toolcall: (toolCall: LiveServerToolCall) => void;
+  // Emitted when output transcription is received
+  outputTranscription: (text: string) => void;
+  // Emitted when input transcription is received
+  inputTranscription: (text: string) => void;
   // Emitted when a tool call is cancelled
   toolcallcancellation: (
     toolcallCancellation: LiveServerToolCallCancellation
@@ -203,6 +207,14 @@ export class GenAILiveClient extends EventEmitter<LiveClientEventTypes> {
       if ("turnComplete" in serverContent) {
         this.log("server.content", "turnComplete");
         this.emit("turncomplete");
+      }
+      if ("outputTranscription" in serverContent) {
+        this.log("server.content", "outputTranscription");
+        this.emit("outputTranscription", serverContent.outputTranscription?.text ?? "");
+      }
+      if ("inputTranscription" in serverContent) {
+        this.log("server.content", "inputTranscription");
+        this.emit("inputTranscription", serverContent.inputTranscription?.text ?? "");
       }
 
       if ("modelTurn" in serverContent) {

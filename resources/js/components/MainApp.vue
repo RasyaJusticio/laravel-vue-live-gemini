@@ -3,6 +3,7 @@ import { Mic, MicOff, Video } from 'lucide-vue-next';
 import { useLiveAPIContext } from './LiveAPIContext';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { AudioRecorder } from '@/lib/audio-recorder';
+import { Modality } from '@google/genai';
 
 const liveAPI = useLiveAPIContext();
 
@@ -35,6 +36,25 @@ const setMuted = (value: boolean) => {
     muted.value = value;
 }
 
+const start = () => {
+    liveAPI.setConfig({
+        responseModalities: [Modality.AUDIO],
+        temperature: 0.7,
+        inputAudioTranscription: {
+            model: "models/gemini-transcribe-001",
+            languageCode: 'id-ID',
+        },
+        outputAudioTranscription: {
+            model: "models/gemini-transcribe-001",
+            languageCode: 'id-ID',
+        },
+        speechConfig: {
+            languageCode: 'id-ID',
+        },
+    })
+    liveAPI.connect();
+}
+
 watch(connected, () => {
     if (connected.value) {
         audioRecorder.value.on("data", onAudioRecorderData)
@@ -47,7 +67,7 @@ watch(connected, () => {
 
 onMounted(() => {
     setTimeout(() => {
-        liveAPI.connect();
+        start();
     }, 3000)
 })
 

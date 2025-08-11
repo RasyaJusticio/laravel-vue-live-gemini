@@ -27,6 +27,9 @@ export function useLiveAPI(options: LiveClientOptions): UseLiveAPIResults {
   const connected = ref(false);
   const isTalking = ref<boolean>(false);
   const volume = ref(0);
+  
+  const outputTranscription = ref<string>('');
+  const inputTranscription = ref<string>('');
 
   onMounted(async () => {
     const audioCtx = await audioContext({ id: 'audio-out' });
@@ -66,7 +69,17 @@ export function useLiveAPI(options: LiveClientOptions): UseLiveAPIResults {
 
   const onTurnComplete = () => {
     isTalking.value = false;
+    inputTranscription.value = '';
+    outputTranscription.value = '';
   }
+  
+  const onOutputTranscription = (text: string) => {
+    outputTranscription.value += text;
+  };
+  
+  const onInputTranscription = (text: string) => {
+    inputTranscription.value += text;
+  };
 
   onMounted(() => {
     client
@@ -75,7 +88,9 @@ export function useLiveAPI(options: LiveClientOptions): UseLiveAPIResults {
       .on('close', onClose)
       .on('audio', onAudio)
       .on('setupcomplete', onSetupComplete)
-      .on('turncomplete', onTurnComplete);
+      .on('turncomplete', onTurnComplete)
+      .on('outputTranscription', onOutputTranscription)
+      .on('inputTranscription', onInputTranscription);
   });
 
   onUnmounted(() => {
@@ -86,6 +101,8 @@ export function useLiveAPI(options: LiveClientOptions): UseLiveAPIResults {
       .off('audio', onAudio)
       .off('setupcomplete', onSetupComplete)
       .off('turncomplete', onTurnComplete)
+      .off('outputTranscription', onOutputTranscription)
+      .off('inputTranscription', onInputTranscription)
       .disconnect();
   });
 
