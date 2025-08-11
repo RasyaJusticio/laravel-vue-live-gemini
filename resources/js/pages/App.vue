@@ -3,19 +3,24 @@ import { LiveAPIProvider } from '@/components/LiveAPIContext';
 import MainApp from '@/components/MainApp.vue';
 import { LiveClientOptions } from '@/types/genai';
 import { Head } from '@inertiajs/vue3';
+import { computed } from 'vue';
 
 interface Props {
-    token: string;
+    authData: {
+        token: string;
+        expireTime: string;
+        maxUses: number;
+    };
 }
 
 const props = defineProps<Props>();
 
-const options: LiveClientOptions = {
-    apiKey: props.token,
+const options = computed<LiveClientOptions>(() => ({
+    apiKey: props.authData.token,
     httpOptions: {
         apiVersion: 'v1alpha'
     }
-}
+}));
 
 </script>
 

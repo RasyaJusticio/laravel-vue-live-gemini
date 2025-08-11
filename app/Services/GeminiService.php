@@ -9,8 +9,9 @@ class GeminiService
 {
     public function generateAuthToken($expireIn = 30, $uses = 1)
     {
+        $expireTime = Carbon::now('UTC')->addMinutes($expireIn)->toIso8601String();
         $body = [
-            'expireTime' => Carbon::now('UTC')->addMinutes($expireIn)->toIso8601String(),
+            'expireTime' => $expireTime,
             'uses' => $uses,
             'bidiGenerateContentSetup' => [
                 'model' => 'models/gemini-2.0-flash-exp',
@@ -30,6 +31,10 @@ class GeminiService
         
         $data = $response->json();
 
-        return $data['name'];
+        return [
+            'token' => $data['name'],
+            'expireTime' => $expireTime,
+            'maxUses' => $uses,
+        ];
     }
 }

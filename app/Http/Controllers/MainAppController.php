@@ -10,8 +10,8 @@ class MainAppController extends Controller
 {
     public function index(GeminiService $geminiService)
     {
-        $token = $geminiService->generateAuthToken();
+        $authData = $geminiService->generateAuthToken();
 
-        return Inertia::render('App', ['token' => $token]);
+        return Inertia::render('App', ['authData' => $authData]);
     }
 }

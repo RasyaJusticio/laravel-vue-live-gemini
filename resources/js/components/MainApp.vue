@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Mic, MicOff, Video } from 'lucide-vue-next';
 import { useLiveAPIContext } from './LiveAPIContext';
-import { computed, onUnmounted, ref, watch } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { AudioRecorder } from '@/lib/audio-recorder';
 
 const liveAPI = useLiveAPIContext();
@@ -45,6 +45,12 @@ watch(connected, () => {
     }
 });
 
+onMounted(() => {
+    setTimeout(() => {
+        liveAPI.connect();
+    }, 3000)
+})
+
 onUnmounted(() => {
     audioRecorder.value.off("data", onAudioRecorderData)
     audioRecorder.value.off("volume", setInVolume);
@@ -54,11 +60,6 @@ onUnmounted(() => {
 
 <template>
     <div class="relative w-full h-full border-2 border-blue-950 rounded-xl">
-        <button
-            class="absolute rounded-xl bg-blue-700 border border-blue-700 text-white cursor-pointer outline-0 p-3 hover:bg-transparent hover:text-blue-700 transition-colors disabled:opacity-50 disabled:pointer-events-none top-4 left-1/2 -translate-x-1/2"
-            @click="connected ? liveAPI.disconnect() : liveAPI.connect()">
-            {{ connected ? "Disconnect" : "Connect" }}
-        </button>
         <div class="absolute flex gap-2 left-1/2 -translate-1/2 bottom-2 border-blue-950 rounded-xl border-2 p-2">
             <button
                 class="rounded-xl bg-blue-700 border border-blue-700 text-white cursor-pointer outline-0 p-3 hover:bg-transparent hover:text-blue-700 transition-colors disabled:opacity-50 disabled:pointer-events-none"
